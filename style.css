@@ -1,0 +1,29 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    display:flex;
+    width: 100svw;
+    height: 100svh;
+}
+
+.board{
+    margin: auto;
+    width: 50%;
+    height: 90%;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+}
+
+.square{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+img{
+    cursor: pointer;
+}
