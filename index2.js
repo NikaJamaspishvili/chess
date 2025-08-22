@@ -50,37 +50,79 @@ export function repaintBoard(positions){
 }
 
 
+import { check } from "./checks.js";
 import { pawnMove, rookMoves, bishopMoves, horseMoves, kingMoves, queenMoves } from "./moves.js";
 
-export function checkAvailableMoves(positions,id,row,column){
-    console.log(id,row,column);
+export function checkAvailableMoves(positions,id,row,column,kingColor){
+    //console.log(id,row,column);
     let moves = [];
 
     if(id === 11 || id === 12){
-        pawnMove(id,moves,row,column);
+        pawnMove(id,moves,row,column,positions);
     }
 
     if(id === 1 || id === 2){
-        rookMoves(moves,row,column,positions);
+        rookMoves(moves,row,column,positions,undefined,id);
     }
 
     if(id === 5 || id === 6){
-        bishopMoves(moves,row,column,positions)
+        bishopMoves(moves,row,column,positions,undefined,id)
     }
 
     if(id === 3 || id === 4){
-        horseMoves(moves,row,column,positions);
+        horseMoves(moves,row,column,positions,undefined,id);
     }
-
+    
     if(id === 9 || id === 10){
-       const availableMoves = kingMoves(moves,row,column,positions,id);
-       return availableMoves;
+       moves = kingMoves(moves,row,column,positions,id);
     }
 
     if(id === 7 || id === 8){
-        queenMoves(moves,row,column,positions);
+        queenMoves(moves,row,column,positions,id);
     }
 
+    //if the piece was standing and there was not check with the king ->
+    //and then the piece moved to the point it could and the check has happened ->
+    //it means that the point is not valid and needs to be removed from moves array.
 
-    return moves;
+    let kingId = kingColor === "white" ? 9 : 10;
+    let kingRow;
+    let kingColumn;
+
+    positions.forEach((result,index)=>{
+       let x = result.findIndex((item) => item === kingId);
+
+       if(x !== -1){
+        kingColumn = x;
+        kingRow = index;
+       }
+    });
+
+    if(id === 9 || id === 10){
+        console.log(moves);
+        return moves;
+    }
+
+    let legalMoves = [];
+
+    moves.forEach(([toRow, toCol]) => {
+        // 1. fresh copy each time
+        let temp = positions.map(r => [...r]);
+    
+        // 2. move the piece
+        temp[toRow][toCol] = id;            // place piece in new spot
+        temp[row][column] = null;           // clear old spot
+    
+        // 3. check king safety
+        const stillSafe = check(kingRow, kingColumn, temp, kingId);
+    
+        // 4. keep move only if safe
+        if (stillSafe) {
+            legalMoves.push([toRow, toCol]);
+        }
+    });
+    
+   //console.log(legalMoves);
+
+    return legalMoves;
 }
