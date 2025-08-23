@@ -21,7 +21,6 @@ export const check = (row,column,positions,id) => {
     return true;
 }
 
-
 export const checkMate = (kingColor,positions) => {
     //first of all we need to check if the opponents king is being checked
     //then alert the opponent and let them make a moves that will save their king
@@ -75,7 +74,7 @@ export const checkMate = (kingColor,positions) => {
     })
 
     if(isKingBeingChecked){
-        return {array:moves_defending_king,status:"checkmate"}
+        return {array:moves_defending_king,status:"check"}
     }else{
 
         //Stalemate move

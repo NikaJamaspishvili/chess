@@ -1,19 +1,19 @@
 let board = document.getElementById("board");
-import { checkAvailableMoves,repaintBoard,pieces } from "./index2.js";
+import { checkAvailableMoves,repaintBoard } from "./index2.js";
 
 //this code defines the information about the pieces
 
 //this code initilaizes the array, which will store the info about the positions of pieces
 
 let positions = [
-    [null, null, null, null,null, null, null, null], // black king
-    [null, null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null],
-    [null, null, null, null, 8, null, null, null], // black queen
-    [null, null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null],
-    [null, null, null, 10, null, null, null, null],
-    [9, null, null, null, null, null, null, 2], // white king vs black rook
+[null, null, null, null, 10, null, null, null], // black king
+[null, null, null, null, null, null, null, null],
+[null, null, null, null, null, null, null, null],
+[null, null, null, null, 8, null, null, null], // black queen
+[null, null, null, null, null, null, null, null],
+[null, null, null, null, null, null, null, null],
+[null, null, null, null, null, null, null, null],
+[9, null, null, null, null, null, null, 2], // white king vs black rook
 ];
 
 function positions_init(){
@@ -60,6 +60,66 @@ const clearPointers = () => {
  let makeAMove = false;
  let available_moves = [];
 
+ import { checkMate } from "./checks.js";
+ const movePiece = new Audio("public/sounds/move-self.mp3");
+ const capturePiece = new Audio("public/sounds/capture.mp3"); 
+ const gameStart = new Audio("public/sounds/game-start.mp3");
+ const checkMateSound = new Audio("public/sounds/checkmate.mp3");
+ const checkSound = new Audio("public/sounds/move-check.mp3");
+
+const moveLogic = (row,column,id) => {
+    //attack logic, it replaces the piece with attackers piece
+    let previousElement = positions[row][column];
+    positions[row][column] = positions[chosenPieceCordinates.row][chosenPieceCordinates.column];
+    positions[chosenPieceCordinates.row][chosenPieceCordinates.column] = null;
+
+    //the end logic to repaint everything
+    clearPointers();
+    repaintBoard(positions);
+    available_moves = [];
+
+    //changes the players turn
+    let player_board = document.getElementById("player_board")
+    playersTurn = playersTurn === "white" ? "black" : "white";
+    player_board.innerText = playersTurn;
+
+    //this code checks the "checks and checkmates" of the opponents pieces
+    let result = checkMate(playersTurn,positions,positions[row][column]);
+    //console.log("result is: ",result);
+    if(result && result.array.length === 0){
+        if(result.status === "stalemate"){
+            alert(`STALEMATE: game is a draw 💥`);
+            checkMateSound.play();
+        }else if(result.status === "check"){
+            //alert("checkmate sound has been played");
+            checkSound.play();
+            checkMateSound.play();
+            alert(`CHECKMATE MOTHERFUCKERS! ${playersTurn === "white" ? "black" : "white"} WON THE GAME 💥`);
+        }
+
+        playersTurn = "white";
+        player_board.innerText = playersTurn;
+        chosenPieceCordinates = {row:null,column:null};
+        makeAMove = false;
+        positions_init();
+        clearPointers();
+        gameStart.play();
+        repaintBoard(positions);
+    }else{
+        if(result.array.length > 0 && result.status === "check"){
+            //alert("checksound has been played");
+            checkSound.play();
+        }else{
+            if(previousElement === null || previousElement === "pointer"){
+                //alert("hit");
+                movePiece.play();
+             }else{
+                capturePiece.play();
+            }
+        }
+    }
+    }
+
  board.addEventListener("click",(e)=>{
     let square  = e.target;
 
@@ -99,41 +159,3 @@ const clearPointers = () => {
 }   
 
 })
-
-import { checkMate } from "./checks.js";
-
-const moveLogic = (row,column,id) => {
-    //attack logic, it replaces the piece with attackers piece
-    positions[row][column] = positions[chosenPieceCordinates.row][chosenPieceCordinates.column];
-    positions[chosenPieceCordinates.row][chosenPieceCordinates.column] = null;
-
-    //the end logic to repaint everything
-    clearPointers();
-    repaintBoard(positions);
-    available_moves = [];
-
-    //changes the players turn
-    let player_board = document.getElementById("player_board")
-    playersTurn = playersTurn === "white" ? "black" : "white";
-    player_board.innerText = playersTurn;
-
-    //this code checks the "checks and checkmates" of the opponents pieces
-    let result = checkMate(playersTurn,positions);
-    console.log("result is: ",result);
-    if(result && result.array.length === 0){
-        
-        if(result.status === "stalemate"){
-            alert(`STALEMATE: game is a draw 💥`);
-        }else if(result.status === "checkmate"){
-            alert(`CHECKMATE MOTHERFUCKERS! ${playersTurn === "white" ? "black" : "white"} WON THE GAME 💥`);
-        }
-
-        playersTurn = "white";
-        player_board.innerText = playersTurn;
-        chosenPieceCordinates = {row:null,column:null};
-        makeAMove = false;
-        positions_init();
-        clearPointers();
-        repaintBoard(positions);
-    }
-}
