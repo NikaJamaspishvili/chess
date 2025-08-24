@@ -86,7 +86,7 @@ const moveLogic = (row,column,id) => {
             //alert("checkmate sound has been played");
             checkSound.play();
             checkMateSound.play();
-            alert(`CHECKMATE MOTHERFUCKERS! ${playersTurn === "white" ? "black" : "white"} WON THE GAME 💥`);
+            alert(`CHECKMATE: ${playersTurn === "white" ? "black" : "white"} WON THE GAME 💥`);
         }
 
         playersTurn = "white";
