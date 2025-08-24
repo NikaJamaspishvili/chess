@@ -60,6 +60,7 @@ const clearPointers = () => {
 
 const moveLogic = (row,column,id) => {
     //attack logic, it replaces the piece with attackers piece
+    
     let previousElement = positions[row][column];
     positions[row][column] = positions[chosenPieceCordinates.row][chosenPieceCordinates.column];
     positions[chosenPieceCordinates.row][chosenPieceCordinates.column] = null;
@@ -109,7 +110,8 @@ const moveLogic = (row,column,id) => {
             }
         }
     }
-    }
+}
+
 
  board.addEventListener("click",(e)=>{
     let square  = e.target;
