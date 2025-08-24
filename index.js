@@ -5,16 +5,7 @@ import { checkAvailableMoves,repaintBoard } from "./index2.js";
 
 //this code initilaizes the array, which will store the info about the positions of pieces
 
-let positions = [
-[null, null, null, null, 10, null, null, null], // black king
-[null, null, null, null, null, null, null, null],
-[null, null, null, null, null, null, null, null],
-[null, null, null, null, 8, null, null, null], // black queen
-[null, null, null, null, null, null, null, null],
-[null, null, null, null, null, null, null, null],
-[null, null, null, null, null, null, null, null],
-[9, null, null, null, null, null, null, 2], // white king vs black rook
-];
+let positions = [];
 
 function positions_init(){
     for(let i=0;i<8;i++){
@@ -36,7 +27,7 @@ function positions_init(){
     }
 }
 
-//positions_init();
+positions_init();
 
 //this code draws the board using the array we initialized previously.
 repaintBoard(positions);
