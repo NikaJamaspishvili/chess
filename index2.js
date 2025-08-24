@@ -50,7 +50,7 @@ export function repaintBoard(positions){
 }
 
 
-import { check } from "../checks.js";
+import { check } from "./checks.js";
 import { pawnMove, rookMoves, bishopMoves, horseMoves, kingMoves, queenMoves } from "./moves.js";
 
 export function checkAvailableMoves(positions,id,row,column,kingColor){

@@ -304,7 +304,7 @@ export const horseMoves = (moves,row,column,positions,kingId,id) => {
 }
 
 
-import { check } from "../checks.js";
+import { check } from "./checks.js";
 
 export const kingMoves = (moves,row,column,positions,id) => {
     function checkCondition(pieceId){
